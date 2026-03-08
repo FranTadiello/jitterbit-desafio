@@ -1,14 +1,20 @@
-﻿const express = require('express');
+﻿require('dotenv').config();
 
-const app = express();
+const app = require('./app');
+const { connectDatabase } = require('./config/database');
+
 const PORT = process.env.PORT || 3000;
 
-app.use(express.json());
+async function bootstrap() {
+  try {
+    await connectDatabase(process.env.MONGODB_URI);
+    app.listen(PORT, () => {
+      console.log(`Server running on port ${PORT}`);
+    });
+  } catch (error) {
+    console.error('Failed to start server:', error.message);
+    process.exit(1);
+  }
+}
 
-app.get('/health', (_req, res) => {
-  res.status(200).json({ status: 'ok' });
-});
-
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+bootstrap();
