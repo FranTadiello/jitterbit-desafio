@@ -67,10 +67,8 @@ describe('GET /order/:orderId - integration', () => {
   it('returns 400 for empty id', async () => {
     const response = await request(app).get('/order/');
 
-    expect([400]).toContain(response.status);
-    if (response.status === 400) {
-      expect(response.body.message).toMatch(/orderId.*required/i);
-    }
+    expect(response.status).toBe(400);
+    expect(response.body.message).toMatch(/orderId.*required/i);
   });
 
   it('returns 400 for malformed id', async () => {
