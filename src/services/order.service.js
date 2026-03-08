@@ -21,6 +21,11 @@ async function createOrder(payload) {
   return Order.create(mappedOrder);
 }
 
+async function getOrderById(orderId) {
+  return Order.findOne({ orderId });
+}
+
 module.exports = {
   createOrder,
+  getOrderById,
 };
