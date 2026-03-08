@@ -79,8 +79,27 @@ async function updateOrder(req, res, next) {
   }
 }
 
-async function deleteOrder(_req, res) {
-  return res.status(501).json({ message: 'Not implemented yet' });
+async function deleteOrder(req, res, next) {
+  try {
+    const { orderId } = req.params;
+
+    if (!orderId) {
+      return res.status(400).json({ message: 'orderId is required' });
+    }
+
+    if (!isValidOrderIdFormat(orderId)) {
+      return res.status(400).json({ message: 'invalid orderId format' });
+    }
+
+    const deleted = await orderService.deleteOrder(orderId);
+    if (!deleted) {
+      return res.status(404).json({ message: 'order not found' });
+    }
+
+    return res.status(204).send();
+  } catch (error) {
+    return next(error);
+  }
 }
 
 module.exports = {

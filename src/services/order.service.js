@@ -79,9 +79,15 @@ async function updateOrder(orderId, payload) {
   return order;
 }
 
+async function deleteOrder(orderId) {
+  const deletedOrder = await Order.findOneAndDelete({ orderId });
+  return Boolean(deletedOrder);
+}
+
 module.exports = {
   createOrder,
   getOrderById,
   listOrders,
   updateOrder,
+  deleteOrder,
 };
