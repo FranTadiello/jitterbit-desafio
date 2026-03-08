@@ -25,7 +25,12 @@ async function getOrderById(orderId) {
   return Order.findOne({ orderId });
 }
 
+async function listOrders() {
+  return Order.find({}).sort({ creationDate: 1 });
+}
+
 module.exports = {
   createOrder,
   getOrderById,
+  listOrders,
 };

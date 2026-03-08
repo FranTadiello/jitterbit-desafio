@@ -42,8 +42,13 @@ async function getOrderById(req, res, next) {
   }
 }
 
-async function listOrders(_req, res) {
-  return res.status(501).json({ message: 'Not implemented yet' });
+async function listOrders(_req, res, next) {
+  try {
+    const orders = await orderService.listOrders();
+    return res.status(200).json(orders);
+  } catch (error) {
+    return next(error);
+  }
 }
 
 async function updateOrder(_req, res) {
