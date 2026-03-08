@@ -1,5 +1,5 @@
 const orderService = require('../services/order.service');
-const { validateOrderPayload } = require('../utils/validators');
+const { validateOrderPayload, validateOrderUpdatePayload } = require('../utils/validators');
 
 function isValidOrderIdFormat(orderId) {
   return /^[A-Za-z0-9-]+$/.test(orderId);
@@ -51,8 +51,32 @@ async function listOrders(_req, res, next) {
   }
 }
 
-async function updateOrder(_req, res) {
-  return res.status(501).json({ message: 'Not implemented yet' });
+async function updateOrder(req, res, next) {
+  try {
+    const { orderId } = req.params;
+
+    if (!orderId) {
+      return res.status(400).json({ message: 'orderId is required' });
+    }
+
+    if (!isValidOrderIdFormat(orderId)) {
+      return res.status(400).json({ message: 'invalid orderId format' });
+    }
+
+    const errors = validateOrderUpdatePayload(req.body);
+    if (errors.length) {
+      return res.status(400).json({ message: 'Validation failed', errors });
+    }
+
+    const updatedOrder = await orderService.updateOrder(orderId, req.body);
+    if (!updatedOrder) {
+      return res.status(404).json({ message: 'order not found' });
+    }
+
+    return res.status(200).json(updatedOrder);
+  } catch (error) {
+    return next(error);
+  }
 }
 
 async function deleteOrder(_req, res) {
